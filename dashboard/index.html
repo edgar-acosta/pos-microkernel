@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>POS Admin - Microkernel</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: #f0f2f5; color: #333; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        h1 { color: #1a73e8; margin-top: 0; }
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.9em; background: #e8f0fe; color: #1a73e8; }
+        code { background: #eee; padding: 2px 5px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>POS Microkernel <span class="status-badge">Core v1.0</span></h1>
+        <p>Servidor FastAPI: <strong id="server-status">Verificando...</strong></p>
+        <hr>
+        <p>Para probar el plugin inyectado, ve a:</p>
+        <code><a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a></code>
+        <p>Busca la sección <strong>"Plugin: plugin_descuentos"</strong></p>
+    </div>
+
+    <script>
+        fetch('http://localhost:8000/')
+            .then(() => document.getElementById('server-status').innerText = 'CONECTADO ✅')
+            .catch(() => document.getElementById('server-status').innerText = 'DESCONECTADO (Inicia uvicorn) ❌');
+    </script>
+</body>
+</html>

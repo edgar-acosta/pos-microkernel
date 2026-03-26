@@ -47,3 +47,19 @@ async def install_plugins_runtime():
             return {"status": "error", "message": f"Error en {item}: {str(e)}"}
             
     return {"status": "success", "added": nuevos, "total_active": len(INSTALLED_PLUGINS)}
+
+@app.delete("/api/admin/uninstall/{plugin_name}")
+async def uninstall_plugin(plugin_name: str):
+    """Elimina un plugin instalado: remueve sus rutas y lo borra del caché de módulos"""
+    if plugin_name not in INSTALLED_PLUGINS:
+        return {"status": "error", "message": f"Plugin '{plugin_name}' no está instalado"}
+
+    prefix = f"/addons/{plugin_name}"
+    app.routes[:] = [r for r in app.routes if not getattr(r, "path", "").startswith(prefix)]
+
+    module_name = f"addons.{plugin_name}.router"
+    sys.modules.pop(module_name, None)
+
+    INSTALLED_PLUGINS.discard(plugin_name)
+
+    return {"status": "success", "removed": plugin_name, "total_active": len(INSTALLED_PLUGINS)}

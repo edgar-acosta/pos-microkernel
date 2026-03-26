@@ -45,6 +45,10 @@ async def install_plugins_runtime():
                 nuevos += 1
         except Exception as e:
             return {"status": "error", "message": f"Error en {item}: {str(e)}"}
+
+    # Invalida el caché del esquema OpenAPI para reflejar las nuevas rutas
+    if nuevos > 0:
+        app.openapi_schema = None
             
     return {"status": "success", "added": nuevos, "total_active": len(INSTALLED_PLUGINS)}
 
@@ -61,5 +65,8 @@ async def uninstall_plugin(plugin_name: str):
     sys.modules.pop(module_name, None)
 
     INSTALLED_PLUGINS.discard(plugin_name)
+
+    # Invalida el caché del esquema OpenAPI para reflejar la eliminación
+    app.openapi_schema = None
 
     return {"status": "success", "removed": plugin_name, "total_active": len(INSTALLED_PLUGINS)}
